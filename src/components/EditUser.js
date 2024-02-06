@@ -1,0 +1,340 @@
+import React from "react";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import { useState, useEffect } from "react";
+import * as Yup from "yup";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./AddUser.css";
+import axios from "axios";
+import { useNavigate, useParams } from "react-router-dom";
+
+const formSchema = Yup.object().shape({
+  firstName: Yup.string()
+    .matches(
+      /^([A-Za-z\u00C0-\u00D6\u00D8-\u00f6\u00f8-\u00ff\s]*)$/gi,
+      "Name can only contain letters."
+    )
+    .max(15, "Must be 15 characters or less")
+    .required("Required"),
+  lastName: Yup.string()
+    .max(20, "Must be 20 characters or less")
+    .required("Required"),
+  address: Yup.string()
+    .max(50, "Must be 50 characters or less")
+    .required("Required"),
+  mobileNumber: Yup.string()
+    .matches(/^[0-9]{10}$/, "Must be a valid 10 digit phone number")
+    .required("Required"),
+  
+  roleId: Yup.number().required("Required"),
+  departmentId:Yup.number().required("Required"),
+  managerId:Yup.number().required("Required")
+});
+
+
+
+
+const EditUser = () => {
+  var navigate=useNavigate();
+  const {id} = useParams();
+  const [roles, setRoles] = useState([]);
+  const [departments,setDepartments]=useState([]);
+  const [managers,setManagers]=useState([]);
+  const[editUser,setEditUser]= useState({});
+  useEffect(() => {
+    axios.get(`https://localhost:44310/api/User/GetUser/${id}`)
+    .then(res => setEditUser(res.data))
+    .catch(err => console.error(err));
+    }, [id]);
+
+    const initialValues = {
+        firstName:editUser.firstName,
+        lastName: editUser.lastName,
+        address: editUser.address,
+        mobileNumber: editUser.mobileNumber,
+        roleId: editUser.roleId,
+        departmentId:editUser.departmentId,
+        managerId:editUser.managerId,
+        isActive:true,
+        updateBy: 1,
+      };
+
+  
+ 
+    useEffect(() => {
+    fetch("https://localhost:44310/api/User/GetAllRoles")
+      .then(async (response) => 
+      {
+        var roles1= await response.json();
+        console.log(roles1);
+        setRoles(roles1);
+      })
+      .then((data) => console.log("data"))
+      .catch((error) => console.error(error));
+
+
+      
+
+      fetch("https://localhost:44310/api/User/GetDepartmentNames")
+  .then(async (response) => 
+  {
+    var departments1= await response.json();
+    console.log(departments1);
+    setDepartments(departments1);
+  })
+  .then((data) => console.log("data"))
+  .catch((error) => console.error(error))
+
+  fetch("https://localhost:44310/api/User/GetAllManagers")
+  .then(async (response) => 
+  {
+    var managers1= await response.json();
+    console.log(managers1);
+    setManagers(managers1);
+  })
+  .then((data) => console.log("data"))
+  .catch((error) => console.error(error))
+
+}, []);
+
+
+
+
+const handleSubmit = async (values) => {
+  alert("Hello");
+  values.roleId=parseInt(values.roleId);
+  values.departmentId=parseInt(values.departmentId);
+  values.managerId=parseInt(values.managerId);
+  console.log(JSON.stringify(editUser));
+  alert(JSON.stringify(editUser));
+  const response = await fetch('https://localhost:44310/api/User/EditUser/' + id, {
+                  method: 'PUT',
+                  headers: {
+                      'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify(editUser)
+
+            });  
+  };
+const cancel=()=>{
+  navigate("/");
+}
+const handleChange = e => {
+    
+    setEditUser({ ...editUser, [e.target.name]: e.target.value });
+  };
+
+if(editUser!=null){
+    return (
+        <>
+          <div className="container mt-5 d-flex justify-content-center formc">
+            <div className="width1">
+              <h1 className="mb-4 text-center">Register Form</h1>
+              <Formik
+                initialValues={initialValues}
+                //validationSchema={formSchema}
+                onSubmit={handleSubmit}
+              >
+                {({ errors, touched }) => (
+                  <Form>
+                    <div className="form-group">
+                      <label>First Name </label>
+                      <Field
+                        className={`form-control m-1 ${
+                          touched.firstName && errors.firstName ? "is-invalid" : ""
+                        }`}
+                        name="firstName"
+                        type="text"
+                        value={initialValues.firstName}
+                        onChange={handleChange}
+                      />
+    
+                      <ErrorMessage
+                        name="firstName"
+                        component="div"
+                        className="invalid-feedback"
+                      />
+                    </div>
+    
+                    <div className="form-group">
+                      <label>Last Name</label>
+                      <Field
+                        className={`form-control m-1 ${
+                          touched.lastName && errors.lastName ? "is-invalid" : ""
+                        }`}
+                        name="lastName"
+                        type="text"
+                        value={initialValues.lastName}
+                        onChange={handleChange}
+                      />
+    
+                      <ErrorMessage
+                        name="lastName"
+                        component="div"
+                        className="invalid-feedback"
+                      />
+                    </div>
+    
+                    <div className="form-group">
+                      <label>Address </label>
+                      <Field
+                        className={`form-control m-1 ${
+                          touched.address && errors.address ? "is-invalid" : ""
+                        }`}
+                        name="address"
+                        type="text"
+                        value={initialValues.address}
+                        onChange={handleChange}
+                      />
+    
+                      <ErrorMessage
+                        name="address"
+                        component="div"
+                        className="invalid-feedback"
+                      />
+                    </div>
+    
+                    <div className="form-group">
+                      <label>Mobile Number</label>
+                      <Field
+                        className={`form-control m-1 ${
+                          touched.mobileNumber && errors.mobileNumber
+                            ? "is-invalid"
+                            : ""
+                        }`}
+                        name="mobileNumber"
+                        type="text"
+                        value={initialValues.mobileNumber}
+                        onChange={handleChange}
+                      />
+    
+                      <ErrorMessage
+                        name="mobileNumber"
+                        component="div"
+                        className="invalid-feedback"
+                      />
+                    </div>
+                    <div className="form-group">
+                    
+                    </div>
+    
+                    
+    
+                    
+                    <div className="form-group">
+                      <label>
+                        Role
+                        <Field
+                          className={`form-control m-1 ${
+                            touched.roleId && errors.roleId ? "is-invalid" : ""
+                          }`}
+                          name="roleId"
+                          as="select"
+                          value={initialValues.roleId}
+                          onChange={handleChange}
+                        >
+                          <option value="">Select a role</option>
+                          {
+                            roles.map((role)=>(
+                              <option value={role.roleId}>{role.roleName}</option>
+    
+                            ))
+                          }
+                         
+                        
+                          
+                        </Field>
+                        <ErrorMessage
+                          name="roleId"
+                          component="div"
+                          className="invalid-feedback"
+                        />
+                      </label>
+                    </div>
+                    <div className="form-group">
+                      <label>
+                        Department
+                        <Field
+                          className={`form-control m-1 ${
+                            touched.departmentId && errors.departmentId ? "is-invalid" : ""
+                          }`}
+                          name="departmentId"
+                          as="select"
+                          value={initialValues.departmentId}
+                          onChange={handleChange}
+                        >
+                          <option value="">Select a department</option>
+                          {
+                            departments.map((department)=>(
+                              <option value={department.departmentId}>{department.departmentName}</option>
+    
+                            ))
+                          }
+                         
+                        
+                          
+                        </Field>
+                        <ErrorMessage
+                          name="departmentId"
+                          component="div"
+                          className="invalid-feedback"
+                        />
+                        </label>
+                        </div>
+                        <div className="form-group">
+                      <label>
+                        Manager
+                        <Field
+                          className={`form-control m-1 ${
+                            touched.managerId && errors.managerId ? "is-invalid" : ""
+                          }`}
+                          name="managerId"
+                          as="select"
+                          value={initialValues.managerId}
+                          onChange={handleChange}
+                        >
+                          <option value="">Select manager</option>
+                          {
+                            managers.map((manager)=>(
+                              <option value={manager.userId}>{manager.firstName} {manager.lastName}</option>
+    
+                            ))
+                          }
+                         
+                        
+                          
+                        </Field>
+                        <ErrorMessage
+                          name="managerId"
+                          component="div"
+                          className="invalid-feedback"
+                        />
+                        </label>
+                        </div>
+    
+                    <div className="text-center">
+                      <button
+                        type="submit"
+                        className="btn btn-dark mt-3 text-center"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-danger mt-3 text-center"
+                        onClick={cancel}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </Form>
+                )}
+              </Formik>
+            </div>
+          </div>
+        </>
+      );
+}
+  
+};
+
+export default EditUser;

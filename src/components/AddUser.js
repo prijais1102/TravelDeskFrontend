@@ -5,6 +5,7 @@ import * as Yup from "yup";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./AddUser.css";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const formSchema = Yup.object().shape({
   firstName: Yup.string()
@@ -32,6 +33,8 @@ const formSchema = Yup.object().shape({
     .required("Required"),
   email: Yup.string().email("Invalid email address").required("Required"),
   roleId: Yup.number().required("Required"),
+  departmentId:Yup.number().required("Required"),
+  managerId:Yup.number().required("Required")
 });
 
 const initialValues = {
@@ -41,30 +44,16 @@ const initialValues = {
   mobileNumber: "",
   password: "",
   email: "",
-  roleId: 0,
-  departmentId:0,
-  managerId:0,
+  roleId: "",
+  departmentId:"",
+  managerId:"",
   isActive: true,
   createBy: 1,
 };
-const handleSubmit = async (values) => {
-  
-  values.roleId=parseInt(values.roleId);
-  values.departmentId=parseInt(values.departmentId);
-  values.managerId=parseInt(values.managerId);
-  console.log(JSON.stringify(values));
-  try {
-    const response = await axios.post(
-      "https://localhost:44310/api/User/AddUser",
-      values
-    );
-    console.log(response.data);
-  } catch (error) {
-    console.error(error);
-  }
-};
+
 
 const Add = () => {
+  var navigate=useNavigate();
   const [roles, setRoles] = useState([]);
   const [departments,setDepartments]=useState([]);
   const [managers,setManagers]=useState([]);
@@ -105,6 +94,30 @@ useEffect(()=>{
   .then((data) => console.log("data"))
   .catch((error) => console.error(error))
 },[]);
+const handleSubmit = async (values) => {
+  
+  values.roleId=parseInt(values.roleId);
+  values.departmentId=parseInt(values.departmentId);
+  values.managerId=parseInt(values.managerId);
+  console.log(JSON.stringify(values));
+  try {
+    const response = await axios.post(
+      "https://localhost:44310/api/User/AddUser",
+      values
+      
+    );
+   navigate("/");
+    //console.log(response.data);
+  } catch (error) {
+    console.error(error);
+  }
+  
+};
+const cancel=()=>{
+  navigate("/");
+}
+
+
   return (
     <>
       <div className="container mt-5 d-flex justify-content-center formc">
@@ -186,6 +199,22 @@ useEffect(()=>{
                     className="invalid-feedback"
                   />
                 </div>
+                <div className="form-group">
+                  <label>Email</label>
+                  <Field
+                    className={`form-control m-1 ${
+                      touched.email && errors.email ? "is-invalid" : ""
+                    }`}
+                    name="email"
+                    type="email"
+                  />
+
+                  <ErrorMessage
+                    name="email"
+                    component="div"
+                    className="invalid-feedback"
+                  />
+                </div>
 
                 <div className="form-group">
                   <label>Password</label>
@@ -205,22 +234,7 @@ useEffect(()=>{
                   />
                 </div>
 
-                <div className="form-group">
-                  <label>Email</label>
-                  <Field
-                    className={`form-control m-1 ${
-                      touched.email && errors.email ? "is-invalid" : ""
-                    }`}
-                    name="email"
-                    type="email"
-                  />
-
-                  <ErrorMessage
-                    name="email"
-                    component="div"
-                    className="invalid-feedback"
-                  />
-                </div>
+                
                 <div className="form-group">
                   <label>
                     Role
@@ -253,9 +267,9 @@ useEffect(()=>{
                   <label>
                     Department
                     <Field
-                      // className={`form-control m-1 ${
-                      //   touched.role && errors.role ? "is-invalid" : ""
-                      // }`}
+                      className={`form-control m-1 ${
+                        touched.departmentId && errors.departmentId ? "is-invalid" : ""
+                      }`}
                       name="departmentId"
                       as="select"
                     >
@@ -270,15 +284,20 @@ useEffect(()=>{
                     
                       
                     </Field>
+                    <ErrorMessage
+                      name="departmentId"
+                      component="div"
+                      className="invalid-feedback"
+                    />
                     </label>
                     </div>
                     <div className="form-group">
                   <label>
                     Manager
                     <Field
-                      // className={`form-control m-1 ${
-                      //   touched.managerId && errors.managerId ? "is-invalid" : ""
-                      // }`}
+                      className={`form-control m-1 ${
+                        touched.managerId && errors.managerId ? "is-invalid" : ""
+                      }`}
                       name="managerId"
                       as="select"
                     >
@@ -293,6 +312,11 @@ useEffect(()=>{
                     
                       
                     </Field>
+                    <ErrorMessage
+                      name="managerId"
+                      component="div"
+                      className="invalid-feedback"
+                    />
                     </label>
                     </div>
 
@@ -302,6 +326,13 @@ useEffect(()=>{
                     className="btn btn-primary mt-3 text-center"
                   >
                     Submit
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-danger mt-3 text-center"
+                    onClick={cancel}
+                  >
+                    Cancel
                   </button>
                 </div>
               </Form>
