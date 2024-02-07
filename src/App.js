@@ -4,16 +4,18 @@ import AdminDashboard from "./components/AdminDashboard";
 import AddUser from "./components/AddUser";
 import EditUser from "./components/EditUser";
 import DisplayUser from "./components/DisplayUser";
+import LoginPage from "./components/LoginPage";
  
 function App() {
   return (
     <>
       <div className="App">
-        <h1>Travel Desk App</h1>
+        <h3>Travel Desk App</h3>
       </div>
  
 <BrowserRouter>
   <Routes>
+    {/* <Route path="/" element={<LoginPage/>}></Route> */}
     <Route path="/" element={<AdminDashboard/>} />
     <Route path="/user/create" element={<AddUser/>} />
     <Route path="/user/edit/:id" element={<EditUser/>} />

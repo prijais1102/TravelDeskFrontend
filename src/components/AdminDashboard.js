@@ -7,7 +7,29 @@ import { Link, useNavigate } from "react-router-dom";
  
  
 const AdminDashboard = () => {
-    const navigate = useNavigate();
+  const [currentPage,setcurrentPage]=useState(1);
+  const [userData, setUserData] = useState(null);
+  const recordsPerPage = 4;
+  const lastIndex= currentPage*recordsPerPage;
+  const firstIndex= lastIndex-recordsPerPage;
+      const navigate = useNavigate();
+ 
+ 
+      const prePage = () => {
+        if (currentPage > 1) {
+            setcurrentPage(currentPage - 1);
+        }
+    };
+ 
+    const changeCPage = (e) => {
+        setcurrentPage(Number(e.target.textContent));
+    };
+ 
+    const nextPage = () => {
+        if (currentPage < Math.ceil(userData.length / recordsPerPage)) {
+            setcurrentPage(currentPage + 1);
+        }
+    };
     const LoadDetail=(id) => {
     navigate("/user/display/"+id);
     }
@@ -27,16 +49,23 @@ const AdminDashboard = () => {
         }
     }
      
-    const [userData, setUserData] = useState(null);
+   
  
     useEffect(() => {
       async function fetchData() {
         const response = await fetch('https://localhost:44310/api/User/AllUsersToDisplay');
         const data = await response.json();
         setUserData(data);
+         
+       
       }
        fetchData();
+       console.log(userData);
+      //  setRecords(userData.slice(firstIndex,lastIndex));
+      //  setNpage(Math.ceil(userData.length / records.length));
+      //  SetNumbers([...Array(npage+1).keys()].slice(1));
     }, []);
+  
   return (
     <>
       <div className="container">
@@ -62,7 +91,8 @@ const AdminDashboard = () => {
               </thead>
               <tbody>
                    {
-                    userData && userData.map(user => (
+                  userData &&
+                  userData.slice(firstIndex, lastIndex).map(user => (
                       <tr key={user.userId}>
                         <td>{user.userId}</td>
                         <td>{user.firstName}</td>
@@ -82,6 +112,24 @@ const AdminDashboard = () => {
  
               </tbody>
             </table>
+            <div className="d-flex justify-content-center">
+            <nav>
+            <ul className='pagination'>
+                            <li className='page-item'>
+                                <a href="#" className='page-link' onClick={prePage}> Prev</a>
+                            </li>
+                            {userData && Array.from({ length: Math.ceil(userData.length / recordsPerPage) }).map((_, i) => (
+                                <li className={`page-item ${currentPage === i + 1 ? 'active' : ''}`} key={i}>
+                                    <a href="#" className='page-link' onClick={changeCPage}>{i + 1}</a>
+                                </li>
+                            ))}
+                             <li className='page-item'>
+                                <a href="#" className='page-link' onClick={nextPage}> Next</a>
+                            </li>
+                        </ul>
+             
+            </nav>
+            </div>
           </div>
         </div>
       </div>

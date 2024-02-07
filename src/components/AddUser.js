@@ -48,7 +48,7 @@ const initialValues = {
   departmentId:"",
   managerId:"",
   isActive: true,
-  createBy: 1,
+  createdBy: 1,
 };
 
 
@@ -122,7 +122,7 @@ const cancel=()=>{
     <>
       <div className="container mt-5 d-flex justify-content-center formc">
         <div className="width1">
-          <h1 className="mb-4 text-center">Register Form</h1>
+          <h3 className="mb-4 text-center">Add User</h3>
           <Formik
             initialValues={initialValues}
             validationSchema={formSchema}

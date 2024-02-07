@@ -6,7 +6,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./AddUser.css";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
-
+ 
 const formSchema = Yup.object().shape({
   firstName: Yup.string()
     .matches(
@@ -24,15 +24,15 @@ const formSchema = Yup.object().shape({
   mobileNumber: Yup.string()
     .matches(/^[0-9]{10}$/, "Must be a valid 10 digit phone number")
     .required("Required"),
-  
+ 
   roleId: Yup.number().required("Required"),
   departmentId:Yup.number().required("Required"),
   managerId:Yup.number().required("Required")
 });
-
-
-
-
+ 
+ 
+ 
+ 
 const EditUser = () => {
   var navigate=useNavigate();
   const {id} = useParams();
@@ -45,7 +45,7 @@ const EditUser = () => {
     .then(res => setEditUser(res.data))
     .catch(err => console.error(err));
     }, [id]);
-
+ 
     const initialValues = {
         firstName:editUser.firstName,
         lastName: editUser.lastName,
@@ -55,14 +55,14 @@ const EditUser = () => {
         departmentId:editUser.departmentId,
         managerId:editUser.managerId,
         isActive:true,
-        updateBy: 1,
+        updatedBy: 1,
       };
-
-  
+ 
+ 
  
     useEffect(() => {
     fetch("https://localhost:44310/api/User/GetAllRoles")
-      .then(async (response) => 
+      .then(async (response) =>
       {
         var roles1= await response.json();
         console.log(roles1);
@@ -70,12 +70,12 @@ const EditUser = () => {
       })
       .then((data) => console.log("data"))
       .catch((error) => console.error(error));
-
-
-      
-
+ 
+ 
+     
+ 
       fetch("https://localhost:44310/api/User/GetDepartmentNames")
-  .then(async (response) => 
+  .then(async (response) =>
   {
     var departments1= await response.json();
     console.log(departments1);
@@ -83,9 +83,9 @@ const EditUser = () => {
   })
   .then((data) => console.log("data"))
   .catch((error) => console.error(error))
-
+ 
   fetch("https://localhost:44310/api/User/GetAllManagers")
-  .then(async (response) => 
+  .then(async (response) =>
   {
     var managers1= await response.json();
     console.log(managers1);
@@ -93,36 +93,36 @@ const EditUser = () => {
   })
   .then((data) => console.log("data"))
   .catch((error) => console.error(error))
-
+ 
 }, []);
-
-
-
-
+ 
+ 
+ 
+ 
 const handleSubmit = async (values) => {
-  alert("Hello");
   values.roleId=parseInt(values.roleId);
   values.departmentId=parseInt(values.departmentId);
   values.managerId=parseInt(values.managerId);
-  console.log(JSON.stringify(editUser));
-  alert(JSON.stringify(editUser));
+  //console.log(JSON.stringify(editUser));
+  //alert(JSON.stringify(values));
   const response = await fetch('https://localhost:44310/api/User/EditUser/' + id, {
                   method: 'PUT',
                   headers: {
                       'Content-Type': 'application/json',
                   },
                   body: JSON.stringify(editUser)
-
-            });  
+ 
+            });
+            navigate("/");
   };
 const cancel=()=>{
   navigate("/");
 }
 const handleChange = e => {
-    
+   
     setEditUser({ ...editUser, [e.target.name]: e.target.value });
   };
-
+ 
 if(editUser!=null){
     return (
         <>
@@ -130,6 +130,7 @@ if(editUser!=null){
             <div className="width1">
               <h1 className="mb-4 text-center">Register Form</h1>
               <Formik
+                // initialValues={{...initialValues,...editUser}}
                 initialValues={initialValues}
                 //validationSchema={formSchema}
                 onSubmit={handleSubmit}
@@ -147,14 +148,14 @@ if(editUser!=null){
                         value={initialValues.firstName}
                         onChange={handleChange}
                       />
-    
+   
                       <ErrorMessage
                         name="firstName"
                         component="div"
                         className="invalid-feedback"
                       />
                     </div>
-    
+   
                     <div className="form-group">
                       <label>Last Name</label>
                       <Field
@@ -166,14 +167,14 @@ if(editUser!=null){
                         value={initialValues.lastName}
                         onChange={handleChange}
                       />
-    
+   
                       <ErrorMessage
                         name="lastName"
                         component="div"
                         className="invalid-feedback"
                       />
                     </div>
-    
+   
                     <div className="form-group">
                       <label>Address </label>
                       <Field
@@ -185,14 +186,14 @@ if(editUser!=null){
                         value={initialValues.address}
                         onChange={handleChange}
                       />
-    
+   
                       <ErrorMessage
                         name="address"
                         component="div"
                         className="invalid-feedback"
                       />
                     </div>
-    
+   
                     <div className="form-group">
                       <label>Mobile Number</label>
                       <Field
@@ -206,7 +207,7 @@ if(editUser!=null){
                         value={initialValues.mobileNumber}
                         onChange={handleChange}
                       />
-    
+   
                       <ErrorMessage
                         name="mobileNumber"
                         component="div"
@@ -214,12 +215,12 @@ if(editUser!=null){
                       />
                     </div>
                     <div className="form-group">
-                    
+                   
                     </div>
-    
-                    
-    
-                    
+   
+                   
+   
+                   
                     <div className="form-group">
                       <label>
                         Role
@@ -236,12 +237,12 @@ if(editUser!=null){
                           {
                             roles.map((role)=>(
                               <option value={role.roleId}>{role.roleName}</option>
-    
+   
                             ))
                           }
                          
-                        
-                          
+                       
+                         
                         </Field>
                         <ErrorMessage
                           name="roleId"
@@ -266,12 +267,12 @@ if(editUser!=null){
                           {
                             departments.map((department)=>(
                               <option value={department.departmentId}>{department.departmentName}</option>
-    
+   
                             ))
                           }
                          
-                        
-                          
+                       
+                         
                         </Field>
                         <ErrorMessage
                           name="departmentId"
@@ -296,12 +297,12 @@ if(editUser!=null){
                           {
                             managers.map((manager)=>(
                               <option value={manager.userId}>{manager.firstName} {manager.lastName}</option>
-    
+   
                             ))
                           }
                          
-                        
-                          
+                       
+                         
                         </Field>
                         <ErrorMessage
                           name="managerId"
@@ -310,7 +311,7 @@ if(editUser!=null){
                         />
                         </label>
                         </div>
-    
+   
                     <div className="text-center">
                       <button
                         type="submit"
@@ -334,7 +335,7 @@ if(editUser!=null){
         </>
       );
 }
-  
+ 
 };
-
+ 
 export default EditUser;
