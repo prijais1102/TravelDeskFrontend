@@ -118,7 +118,7 @@ const handleSubmit = async (values) => {
 const cancel=()=>{
   navigate("/");
 }
-const handleChange = e => {
+const handleCustomChange = e => {
    
     setEditUser({ ...editUser, [e.target.name]: e.target.value });
   };
@@ -131,11 +131,13 @@ if(editUser!=null){
               <h1 className="mb-4 text-center">Register Form</h1>
               <Formik
                 // initialValues={{...initialValues,...editUser}}
-                initialValues={initialValues}
-                //validationSchema={formSchema}
+                initialValues={editUser || initialValues}
+                validationSchema={formSchema}
                 onSubmit={handleSubmit}
+                enableReinitialize={true}
               >
-                {({ errors, touched }) => (
+                {({ errors, touched, handleChange,   handleBlur,
+              setFieldValue, values }) => (
                   <Form>
                     <div className="form-group">
                       <label>First Name </label>
@@ -145,8 +147,10 @@ if(editUser!=null){
                         }`}
                         name="firstName"
                         type="text"
-                        value={initialValues.firstName}
-                        onChange={handleChange}
+                        value={values?.firstName}
+                        onChange={(newValue)=>{
+                          handleCustomChange(newValue)
+                        }}
                       />
    
                       <ErrorMessage
@@ -164,8 +168,10 @@ if(editUser!=null){
                         }`}
                         name="lastName"
                         type="text"
-                        value={initialValues.lastName}
-                        onChange={handleChange}
+                        value={values?.lastName}
+                        onChange={(newValue)=>{
+                          handleCustomChange(newValue)
+                        }}
                       />
    
                       <ErrorMessage
@@ -183,8 +189,10 @@ if(editUser!=null){
                         }`}
                         name="address"
                         type="text"
-                        value={initialValues.address}
-                        onChange={handleChange}
+                        value={values?.address}
+                        onChange={(newValue)=>{
+                          handleCustomChange(newValue)
+                        }}
                       />
    
                       <ErrorMessage
@@ -204,8 +212,10 @@ if(editUser!=null){
                         }`}
                         name="mobileNumber"
                         type="text"
-                        value={initialValues.mobileNumber}
-                        onChange={handleChange}
+                        value={values?.mobileNumber}
+                        onChange={(newValue)=>{
+                          handleCustomChange(newValue)
+                        }}
                       />
    
                       <ErrorMessage
@@ -230,8 +240,10 @@ if(editUser!=null){
                           }`}
                           name="roleId"
                           as="select"
-                          value={initialValues.roleId}
-                          onChange={handleChange}
+                          value={values?.roleId}
+                          onChange={(newValue)=>{
+                            handleCustomChange(newValue)
+                          }}
                         >
                           <option value="">Select a role</option>
                           {
@@ -260,8 +272,10 @@ if(editUser!=null){
                           }`}
                           name="departmentId"
                           as="select"
-                          value={initialValues.departmentId}
-                          onChange={handleChange}
+                          value={values.departmentId}
+                          onChange={(newValue)=>{
+                            handleCustomChange(newValue)
+                          }}
                         >
                           <option value="">Select a department</option>
                           {
@@ -290,8 +304,10 @@ if(editUser!=null){
                           }`}
                           name="managerId"
                           as="select"
-                          value={initialValues.managerId}
-                          onChange={handleChange}
+                          value={values?.managerId}
+                          onChange={(newValue)=>{
+                            handleCustomChange(newValue)
+                          }}
                         >
                           <option value="">Select manager</option>
                           {
