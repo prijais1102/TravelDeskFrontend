@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./LoginPage.css";
+import { jwtDecode } from "jwt-decode";
 
 const LoginPage = () => {
     const[message,setMessage]=useState('');
@@ -20,7 +21,9 @@ const LoginPage = () => {
         var result = await response.json();
         localStorage.setItem("token", result.token);
         const token = localStorage.getItem("token");
-        console.log(token);
+        const decodedToken =jwtDecode(token);
+        console.log(decodedToken);
+        console.log(decodedToken.role);
         if (token != "undefined")
         {
             setMessage("OK");

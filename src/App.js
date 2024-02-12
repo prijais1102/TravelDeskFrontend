@@ -15,8 +15,8 @@ function App() {
  
 <BrowserRouter>
   <Routes>
-    {/* <Route path="/" element={<LoginPage/>}></Route> */}
-    <Route path="/" element={<AdminDashboard/>} />
+    <Route path="/" element={<LoginPage/>}></Route>
+    {/* <Route path="/" element={<AdminDashboard/>} /> */}
     <Route path="/user/create" element={<AddUser/>} />
     <Route path="/user/edit/:id" element={<EditUser/>} />
     <Route path="/user/display/:id" element={<DisplayUser/>} />
