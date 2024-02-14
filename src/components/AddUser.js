@@ -6,6 +6,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./AddUser.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
 const formSchema = Yup.object().shape({
   firstName: Yup.string()
@@ -57,6 +58,10 @@ const Add = () => {
   const [roles, setRoles] = useState([]);
   const [departments,setDepartments]=useState([]);
   const [managers,setManagers]=useState([]);
+  const token = localStorage.getItem("token");
+        const decodedToken =jwtDecode(token);
+        console.log(decodedToken);
+        console.log(decodedToken.userId);
   useEffect(() => {
     
     fetch("https://localhost:44310/api/User/GetAllRoles")
@@ -87,9 +92,9 @@ useEffect(()=>{
   fetch("https://localhost:44310/api/User/GetAllManagers")
   .then(async (response) => 
   {
-    var managers1= await response.json();
-    console.log(managers1);
-    setManagers(managers1);
+    //var managers1= await response.json();
+    console.log(response);
+    //setManagers(managers1);
   })
   .then((data) => console.log("data"))
   .catch((error) => console.error(error))
@@ -103,7 +108,12 @@ const handleSubmit = async (values) => {
   try {
     const response = await axios.post(
       "https://localhost:44310/api/User/AddUser",
-      values
+      
+      {
+        ...values,
+        createdBy: decodedToken.userId
+      }
+      
       
     );
    navigate("/");

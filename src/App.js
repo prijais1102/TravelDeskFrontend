@@ -5,6 +5,7 @@ import AddUser from "./components/AddUser";
 import EditUser from "./components/EditUser";
 import DisplayUser from "./components/DisplayUser";
 import LoginPage from "./components/LoginPage";
+import RequestForm from "./components/RequestForm";
  
 function App() {
   return (
@@ -15,7 +16,7 @@ function App() {
  
 <BrowserRouter>
   <Routes>
-    <Route path="/" element={<LoginPage/>}></Route>
+    <Route path="/" element={<RequestForm/>}></Route>
     {/* <Route path="/" element={<AdminDashboard/>} /> */}
     <Route path="/user/create" element={<AddUser/>} />
     <Route path="/user/edit/:id" element={<EditUser/>} />

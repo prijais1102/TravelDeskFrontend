@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import "./LoginPage.css";
 import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
     const[message,setMessage]=useState('');
+    const navigate = useNavigate();
   const onButtonClick = () => {
    
     //console.log("onButtonClick");
@@ -26,7 +28,9 @@ const LoginPage = () => {
         console.log(decodedToken.role);
         if (token != "undefined")
         {
+          navigate('/user/create');
             setMessage("OK");
+            
         }
         else{
             setMessage("Invalid username/password");
